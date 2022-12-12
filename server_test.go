@@ -108,7 +108,7 @@ func TestSetValueRequestSuccess(t *testing.T) {
 		onValueUpdateFunc = true
 	})
 
-	s.ss.Handler.ServeHTTP(w, req)
+	s.Ss.Handler.ServeHTTP(w, req)
 
 	r := w.Result()
 	if is, want := r.StatusCode, http.StatusNoContent; is != want {
@@ -146,7 +146,7 @@ func TestSetValueRequestFailure(t *testing.T) {
 		return nil, JsonStatusResourceBusy
 	}
 
-	s.ss.Handler.ServeHTTP(w, req)
+	s.Ss.Handler.ServeHTTP(w, req)
 
 	r := w.Result()
 	if is, want := r.StatusCode, http.StatusMultiStatus; is != want {
@@ -182,7 +182,7 @@ func TestGetProgrammableSwitchEvent(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	srv.setSession(req.RemoteAddr, &session{})
-	srv.ss.Handler.ServeHTTP(w, req)
+	srv.Ss.Handler.ServeHTTP(w, req)
 
 	r := w.Result()
 	if is, want := r.StatusCode, http.StatusOK; is != want {

@@ -46,7 +46,7 @@ type Server struct {
 	Key          KeyPair // public and private key (generated and stored on disk)
 
 	st *storer        // stores data
-	ss *http.Server   // http server
+	Ss *http.Server   // http server
 	a  *accessory.A   // main accessory
 	as []*accessory.A // bridged accessories
 
@@ -94,7 +94,7 @@ func NewServer(store Store, a *accessory.A, as ...*accessory.A) (*Server, error)
 		sess: make(map[string]interface{}),
 		cons: make(map[string]*conn),
 	}
-	s.ss = &http.Server{
+	s.Ss = &http.Server{
 		Handler:   r,
 		ConnState: s.connStateEvent,
 	}
@@ -151,7 +151,7 @@ func NewServer(store Store, a *accessory.A, as ...*accessory.A) (*Server, error)
 
 // ServeMux returns the http handler.
 func (s *Server) ServeMux() ServeMux {
-	return s.ss.Handler.(*chi.Mux)
+	return s.Ss.Handler.(*chi.Mux)
 }
 
 // IsAuthorized returns true if the provided
@@ -224,13 +224,13 @@ func (s *Server) listenAndServe(ctx context.Context) error {
 	serverStop := make(chan struct{})
 	go func() {
 		<-serverCtx.Done()
-		s.ss.Close()
+		s.Ss.Close()
 		ln.Close()
 		log.Debug.Println("http server stopped")
 		serverStop <- struct{}{}
 	}()
 
-	err = s.ss.Serve(ln)
+	err = s.Ss.Serve(ln)
 	<-dnsStop
 	<-serverStop
 
